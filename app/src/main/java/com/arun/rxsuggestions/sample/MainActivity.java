@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             return strings.size();
         }
 
-        public void setSuggestions(@NonNull List<String> newStrings) {
+        void setSuggestions(@NonNull List<String> newStrings) {
             final SuggestionDiff suggestionDiff = new SuggestionDiff(strings, newStrings);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(suggestionDiff, true);
             strings.clear();
