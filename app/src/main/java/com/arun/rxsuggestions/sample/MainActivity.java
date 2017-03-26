@@ -1,4 +1,4 @@
-package com.arun.rxgoogleinstant.sample;
+package com.arun.rxsuggestions.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.arun.rxgoogleinstant.RxSuggestions;
+import com.arun.rxsuggestions.RxSuggestions;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 

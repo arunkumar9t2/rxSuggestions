@@ -1,4 +1,4 @@
-package com.arun.rxgoogleinstant;
+package com.arun.rxsuggestions;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

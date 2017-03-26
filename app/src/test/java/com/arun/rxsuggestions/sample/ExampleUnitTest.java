@@ -1,4 +1,4 @@
-package com.arun.rxgoogleinstant;
+package com.arun.rxsuggestions.sample;
 
 import org.junit.Test;
 

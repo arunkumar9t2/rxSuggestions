@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.arun.rxgoogleinstant">
+    package="com.arun.rxsuggestions">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
