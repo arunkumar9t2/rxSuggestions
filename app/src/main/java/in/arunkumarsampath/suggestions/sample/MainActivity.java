@@ -9,7 +9,6 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,19 +17,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.arunkumarsampath.suggestions.RxSuggestions;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
@@ -63,30 +57,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         subscription.add(RxTextView.afterTextChangeEvents(searchBox)
-                .map(new Func1<TextViewAfterTextChangeEvent, String>() {
-                    @Override
-                    public String call(TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) {
-                        return textViewAfterTextChangeEvent.editable().toString();
-                    }
-                }).filter(new Func1<String, Boolean>() {
-                    @Override
-                    public Boolean call(String s) {
-                        return !TextUtils.isEmpty(s);
-                    }
-                }).subscribeOn(AndroidSchedulers.mainThread())
-                .debounce(300, TimeUnit.MILLISECONDS)
+                .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
-                .doOnNext(new Action1<List<String>>() {
-                    @Override
-                    public void call(List<String> strings) {
-                        suggestionsAdapter.setSuggestions(strings);
-                    }
-                }).doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.e(TAG, throwable.toString());
-                    }
-                }).subscribe());
+                .doOnNext(this::setSuggestions)
+                .doOnError(throwable -> Log.e(TAG, throwable.toString()))
+                .subscribe());
+    }
+
+    private void setSuggestions(@NonNull List<String> suggestions) {
+        recyclerView.post(() -> suggestionsAdapter.setSuggestions(suggestions));
     }
 
     @Override

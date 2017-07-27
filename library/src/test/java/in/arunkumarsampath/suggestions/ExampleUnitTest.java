@@ -1,4 +1,4 @@
-package com.in.rxsuggestions;
+package in.arunkumarsampath.suggestions;
 
 import org.junit.Test;
 

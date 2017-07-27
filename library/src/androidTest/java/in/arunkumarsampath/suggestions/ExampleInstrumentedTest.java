@@ -1,4 +1,4 @@
-package com.in.rxsuggestions;
+package in.arunkumarsampath.suggestions;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
