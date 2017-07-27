@@ -9,7 +9,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "com.arun.rxgoogleinstant.sample"
+        applicationId "in.arunkumarsampath.suggestions.sample"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1

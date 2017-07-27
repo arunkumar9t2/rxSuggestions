@@ -1,8 +1,8 @@
-package com.arun.rxsuggestions.sample;
+package com.in.rxsuggestions.sample;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

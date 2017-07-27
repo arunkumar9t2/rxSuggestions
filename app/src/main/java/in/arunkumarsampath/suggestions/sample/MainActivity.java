@@ -1,4 +1,4 @@
-package com.arun.rxsuggestions.sample;
+package in.arunkumarsampath.suggestions.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.arun.rxsuggestions.RxSuggestions;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 
@@ -28,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import in.arunkumarsampath.suggestions.RxSuggestions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;

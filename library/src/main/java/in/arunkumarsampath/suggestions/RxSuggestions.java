@@ -1,4 +1,4 @@
-package com.arun.rxsuggestions;
+package in.arunkumarsampath.suggestions;
 
 
 import android.support.annotation.NonNull;
