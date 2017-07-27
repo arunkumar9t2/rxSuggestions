@@ -33,10 +33,20 @@ class RxSuggestionsInternal {
     private final static String UTF8 = "UTF-8";
     private static final String SUGGESTION = "suggestion";
 
+    /**
+     * Pre-processor to transform search term into the suggestions API URL.
+     */
     @NonNull
     static final Func1<Pair<String, Integer>, Pair<String, Integer>> SEARCH_TERM_TO_URL_MAPPER
             = termPair -> Pair.create(SEARCH_URL.concat(termPair.first.trim()).replace(" ", "+"), termPair.second);
 
+    /**
+     * Returns an Observable which emits a list of suggestions for given search term and no of
+     * suggestions encapsulated in {@param searchPair}
+     *
+     * @param searchPair Pair containing search term and no of suggestions.
+     * @return
+     */
     static Observable<List<String>> suggestionsObservable(final Pair<String, Integer> searchPair) {
         return Observable.create(new Action1<Emitter<List<String>>>() {
             private HttpURLConnection httpURLConnection;
