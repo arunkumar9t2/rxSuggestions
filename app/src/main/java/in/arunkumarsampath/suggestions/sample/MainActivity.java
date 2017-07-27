@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
                 .doOnNext(this::setSuggestions)
-                .doOnError(throwable -> Log.e(TAG, throwable.toString()))
+                .doOnError(t -> Log.e(TAG, t.toString()))
                 .subscribe());
     }
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.ListItemHolder> {
-        private final List<String> strings = new ArrayList<>();
+        private final List<String> suggestions = new ArrayList<>();
 
         SuggestionsAdapter() {
             setHasStableIds(true);
@@ -94,26 +94,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(ListItemHolder holder, int position) {
             if (holder.itemView instanceof TextView) {
-                ((TextView) holder.itemView).setText(strings.get(position));
+                ((TextView) holder.itemView).setText(suggestions.get(position));
                 ((TextView) holder.itemView).setTextColor(Color.BLACK);
             }
         }
 
         @Override
         public long getItemId(int position) {
-            return strings.get(position).hashCode();
+            return suggestions.get(position).hashCode();
         }
 
         @Override
         public int getItemCount() {
-            return strings.size();
+            return suggestions.size();
         }
 
         void setSuggestions(@NonNull List<String> newStrings) {
-            final SuggestionDiff suggestionDiff = new SuggestionDiff(strings, newStrings);
+            final SuggestionDiff suggestionDiff = new SuggestionDiff(suggestions, newStrings);
             final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(suggestionDiff, true);
-            strings.clear();
-            strings.addAll(newStrings);
+            suggestions.clear();
+            suggestions.addAll(newStrings);
             diffResult.dispatchUpdatesTo(this);
         }
 

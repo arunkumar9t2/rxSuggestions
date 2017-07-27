@@ -14,7 +14,7 @@
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:hint="Enter search term" />
+        android:hint="@string/enter_search_term" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -23,5 +23,4 @@
         android:clipChildren="true"
         android:clipToPadding="false"
         tools:listitem="@android:layout/simple_list_item_1" />
-
 </LinearLayout>
