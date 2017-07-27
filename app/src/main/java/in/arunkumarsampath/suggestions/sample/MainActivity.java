@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    private final CompositeSubscription subscription = new CompositeSubscription();
+    private final CompositeSubscription subs = new CompositeSubscription();
+
     private SuggestionsAdapter suggestionsAdapter;
 
     @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        subscription.add(RxTextView.afterTextChangeEvents(searchBox)
+        subs.add(RxTextView.afterTextChangeEvents(searchBox)
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
                 .doOnNext(this::setSuggestions)
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        subscription.clear();
+        subs.clear();
     }
 
     @OnClick(R.id.fab)
