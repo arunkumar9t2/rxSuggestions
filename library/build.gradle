@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 26
@@ -25,6 +26,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+
+apply from: 'gradle-jcenter-push.gradle'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

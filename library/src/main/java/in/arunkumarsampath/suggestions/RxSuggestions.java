@@ -18,8 +18,8 @@ public class RxSuggestions {
     private static final int DEFAULT_NO_SUGGESTIONS = 5;
 
     /**
-     * Returns an Observable that emits a list of suggestions for given {@param searchTerm}. The # of
-     * suggestions is limited by {@param maxSuggestions}.
+     * Returns an Observable that emits a list of suggestions for given {@code searchTerm}. The # of
+     * suggestions is limited by {@code maxSuggestions}.
      * <p>
      * Note: This Observable does not run on any particular {@link Schedulers}.
      *
