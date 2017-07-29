@@ -8,7 +8,7 @@ If you have a content based app, this library makes it easier to show search sug
 The implementation is decoupled meaning the suggestions fetching can be used for any purpose and not only limited to search.
 
 # Demo
-
+![RxSuggestionsDemo](https://raw.githubusercontent.com/arunkumar9t2/rxSuggestions/master/art/demo.gif)
 # Download
 
 Library is available via `jcenter()`.
