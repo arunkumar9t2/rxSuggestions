@@ -1,7 +1,7 @@
 
-# RxSuggestion
+# RxSuggestions
 
-A RxJava library to fetch search suggestions backed by Google Suggest.
+A RxJava library to fetch search suggestions backed by `Google Suggest`.
 
 If you have a content based app, this library makes it easier to show search suggestions so that your users spend less time typing the whole word.
 
