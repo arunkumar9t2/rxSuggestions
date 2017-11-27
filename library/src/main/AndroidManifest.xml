@@ -18,7 +18,5 @@
     package="in.arunkumarsampath.suggestions">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <application
-        android:label="@string/app_name"
-        android:supportsRtl="true" />
+    <application />
 </manifest>
