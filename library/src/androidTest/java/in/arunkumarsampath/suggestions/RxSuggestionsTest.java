@@ -16,13 +16,16 @@
 
 package in.arunkumarsampath.suggestions;
 
+import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.List;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static org.junit.Assert.assertTrue;
@@ -34,34 +37,93 @@ public class RxSuggestionsTest {
 
     @Test
     public void fetchSuggestionsCountTest() throws Exception {
-        final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
         int maxSuggestions = 1;
-        RxSuggestions.fetch("a", maxSuggestions).subscribe(testSubscriber);
-        testSubscriber.assertValueCount(1);
-        testSubscriber.assertCompleted();
-        testSubscriber.assertNoErrors();
+        final String searchTerm = "a";
 
-        final List<List<String>> nextEvents = testSubscriber.getOnNextEvents();
-        assertTrue(!nextEvents.isEmpty() && nextEvents.size() == 1);
-        assertTrue(nextEvents.get(0).size() == maxSuggestions);
+        final TestSubscriber<List<String>> fetchTestSubscriber = TestSubscriber.create();
+        RxSuggestions.fetch(searchTerm, maxSuggestions).subscribe(fetchTestSubscriber);
+
+        final TestSubscriber<List<String>> transformerTestSubscriber = TestSubscriber.create();
+        getTransformerObservable(searchTerm, maxSuggestions).subscribe(transformerTestSubscriber);
+        transformerTestSubscriber.awaitTerminalEvent();
+
+        for (TestSubscriber<List<String>> testSubscriber : Arrays.asList(fetchTestSubscriber, transformerTestSubscriber)) {
+            testSubscriber.assertValueCount(maxSuggestions);
+            testSubscriber.assertCompleted();
+            testSubscriber.assertNoErrors();
+
+            final List<List<String>> nextEvents = testSubscriber.getOnNextEvents();
+            assertTrue(!nextEvents.isEmpty() && nextEvents.size() == maxSuggestions);
+            assertTrue(nextEvents.get(0).size() == maxSuggestions);
+        }
     }
 
     @Test
     public void fetchSuggestionsNoErrorTest() throws Exception {
-        final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
-        RxSuggestions.fetch("Something").subscribe(testSubscriber);
-        testSubscriber.assertNoErrors();
-        testSubscriber.assertValueCount(1);
+        String searchTerm = "Something";
+
+        final TestSubscriber<List<String>> fetchTestSubscriber = TestSubscriber.create();
+        RxSuggestions.fetch(searchTerm).subscribe(fetchTestSubscriber);
+
+        final TestSubscriber<List<String>> transformerTestSubscriber = getTransformerTestSubscriber(searchTerm);
+
+        for (TestSubscriber<List<String>> testSubscriber : Arrays.asList(fetchTestSubscriber, transformerTestSubscriber)) {
+            testSubscriber.assertNoErrors();
+            testSubscriber.assertValueCount(1);
+        }
     }
 
+    @Test
     public void fetchSuggestionValueReceivedTest() throws Exception {
-        final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
-        RxSuggestions.fetch("a").subscribe(testSubscriber);
-        testSubscriber.assertCompleted();
-        testSubscriber.assertNoErrors();
-        final List<List<String>> nextEvents = testSubscriber.getOnNextEvents();
-        for (String suggestion : nextEvents.get(0)) {
-            assertTrue(!suggestion.isEmpty());
+        String searchTerm = "a";
+
+        final TestSubscriber<List<String>> fetchTestSubscriber = TestSubscriber.create();
+        RxSuggestions.fetch(searchTerm).subscribe(fetchTestSubscriber);
+
+        final TestSubscriber<List<String>> transformerTestSubscriber = getTransformerTestSubscriber(searchTerm);
+
+        for (TestSubscriber<List<String>> testSubscriber : Arrays.asList(fetchTestSubscriber, transformerTestSubscriber)) {
+            final List<List<String>> nextEvents = testSubscriber.getOnNextEvents();
+            for (String suggestion : nextEvents.get(0)) {
+                assertTrue(!suggestion.isEmpty());
+            }
         }
+    }
+
+    @Test
+    public void fetchSuggestionsForEmptyString() throws Exception {
+        String searchTerm = "    ";
+
+        final TestSubscriber<List<String>> fetchTestSubscriber = TestSubscriber.create();
+        RxSuggestions.fetch(searchTerm).subscribe(fetchTestSubscriber);
+
+        final TestSubscriber<List<String>> transformerTestSubscriber = getTransformerTestSubscriber(searchTerm);
+
+        for (TestSubscriber<List<String>> testSubscriber : Arrays.asList(transformerTestSubscriber)) {
+            testSubscriber.assertNoErrors();
+            testSubscriber.assertNoValues();
+        }
+    }
+
+    @NonNull
+    private TestSubscriber<List<String>> getTransformerTestSubscriber(String searchTerm) {
+        final TestSubscriber<List<String>> transformerTestSubscriber = TestSubscriber.create();
+        getTransformerObservable(searchTerm).subscribe(transformerTestSubscriber);
+        transformerTestSubscriber.awaitTerminalEvent();
+        return transformerTestSubscriber;
+    }
+
+    /**
+     * Helper to get a stream with {@link RxSuggestions#suggestionsTransformer()} applied.
+     *
+     * @param searchTerm Search Term
+     * @return
+     */
+    private Observable<List<String>> getTransformerObservable(String searchTerm) {
+        return Observable.just(searchTerm).compose(RxSuggestions.suggestionsTransformer());
+    }
+
+    private Observable<List<String>> getTransformerObservable(String searchTerm, final int count) {
+        return Observable.just(searchTerm).compose(RxSuggestions.suggestionsTransformer(count));
     }
 }
