@@ -27,6 +27,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static in.arunkumarsampath.suggestions.RxSuggestionsInternal.SEARCH_TERM_TO_URL_MAPPER;
+import static in.arunkumarsampath.suggestions.RxSuggestionsInternal.emptyStringFilter;
 import static in.arunkumarsampath.suggestions.RxSuggestionsInternal.requireNonNull;
 
 public class RxSuggestions {
@@ -46,7 +47,9 @@ public class RxSuggestions {
     @NonNull
     public static Observable<List<String>> fetch(@NonNull String searchTerm, final int maxSuggestions) {
         searchTerm = requireNonNull(searchTerm, "searchTerm cannot be null");
-        return Observable.just(new Pair<>(searchTerm, maxSuggestions))
+        return Observable.just(searchTerm)
+                .compose(emptyStringFilter())
+                .map(term -> new Pair<>(term, maxSuggestions))
                 .map(SEARCH_TERM_TO_URL_MAPPER)
                 .flatMap(RxSuggestionsInternal::suggestionsObservable);
     }
@@ -54,7 +57,7 @@ public class RxSuggestions {
     /**
      * Same as {@link #fetch(String, int)} but with default no of suggestions specified by {@link #DEFAULT_NO_SUGGESTIONS}
      *
-     * @param searchTerm
+     * @param searchTerm Keyword
      * @return Observable of list of suggestions.
      */
     @NonNull
@@ -74,8 +77,9 @@ public class RxSuggestions {
      */
     @NonNull
     public static Observable.Transformer<String, List<String>> suggestionsTransformer(final int maxSuggestions) {
+        //noinspection Convert2MethodRef
         return stringObservable -> stringObservable
-                .filter(s -> s != null && !s.isEmpty())
+                .compose(emptyStringFilter())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
                 .switchMap(searchTerm -> fetch(searchTerm, maxSuggestions))

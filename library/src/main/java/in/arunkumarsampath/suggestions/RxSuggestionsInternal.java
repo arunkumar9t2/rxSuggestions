@@ -20,10 +20,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -99,7 +97,7 @@ class RxSuggestionsInternal {
                         suggestionListEmitter.onNext(suggestions);
                         suggestionListEmitter.onCompleted();
                     }
-                } catch (IOException | XmlPullParserException e) {
+                } catch (Exception e) {
                     suggestionListEmitter.onError(e);
                 } finally {
                     disconnect();
@@ -120,5 +118,13 @@ class RxSuggestionsInternal {
         if (obj == null)
             throw new NullPointerException(message);
         return obj;
+    }
+
+    static Observable.Transformer<String, String> emptyStringFilter() {
+        //noinspection Convert2MethodRef
+        return stringObservable -> stringObservable
+                .filter(s -> s != null)
+                .map(String::trim)
+                .filter(s -> !s.isEmpty());
     }
 }
