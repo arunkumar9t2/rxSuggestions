@@ -86,6 +86,7 @@ This feature was initially developed for use in my browser app [Chromer.](https:
 If you are a developer and would like to improve this library, please consider making a pull request or create an issue so I can look into it.
 
 * Code style is Android Studio default.
+* No hungarian notation.
 
 # License
 
