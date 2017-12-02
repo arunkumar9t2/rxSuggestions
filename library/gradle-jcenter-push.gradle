@@ -21,7 +21,7 @@ publish {
     userOrg = "arunkumar9t2"
     groupId = "in.arunkumarsampath"
     artifactId = "suggestions"
-    publishVersion = "1.0.1"
+    publishVersion = "1.0.2"
     desc = "RxJava library to fetch search suggestions using Google Suggest API"
     website = "https://github.com/arunkumar9t2/rxSuggestions.git"
 }
