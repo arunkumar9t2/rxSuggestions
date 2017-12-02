@@ -17,6 +17,7 @@
 package in.arunkumarsampath.suggestions;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -44,9 +45,10 @@ class RxSuggestionsInternal {
     private static final String BASE_URL = "http://suggestqueries.google.com/complete/search?";
     private static final String CLIENT = "client=toolbar";
     private static final String SEARCH_URL = BASE_URL + CLIENT + "&q=";
-    private final static String UTF8 = "UTF-8";
     private static final String SUGGESTION = "suggestion";
 
+    private final static String UTF8 = "UTF-8";
+    private final static String ISO = "ISO-8859-1";
     /**
      * Pre-processor to transform search term into the suggestions API URL.
      */
@@ -84,7 +86,7 @@ class RxSuggestionsInternal {
                         final XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                         factory.setNamespaceAware(false);
                         final XmlPullParser xmlParser = factory.newPullParser();
-                        xmlParser.setInput(inputStream, UTF8);
+                        xmlParser.setInput(inputStream, extractEncoding(httpURLConnection.getContentType()));
 
                         int eventType = xmlParser.getEventType();
                         while (eventType != END_DOCUMENT && suggestions.size() < maxSuggestions) {
@@ -113,11 +115,31 @@ class RxSuggestionsInternal {
         }, Emitter.BackpressureMode.LATEST);
     }
 
+    /**
+     * Tries to extract type of encoding for the given content type.
+     *
+     * @param contentType Content type gotten from {@link HttpURLConnection#getContentType()}
+     * @return
+     */
+    @NonNull
+    static String extractEncoding(@Nullable String contentType) {
+        final String[] values;
+        if (contentType != null) {
+            values = contentType.split(";");
+        } else {
+            values = new String[0];
+        }
+        String charset = "";
 
-    static <T> T requireNonNull(T obj, @NonNull String message) {
-        if (obj == null)
-            throw new NullPointerException(message);
-        return obj;
+        for (String value : values) {
+            value = value.trim().toLowerCase();
+            if (value.startsWith("charset="))
+                charset = value.substring("charset=".length());
+        }
+        // http1.1 says ISO-8859-1 is the default charset
+        if (charset.length() == 0)
+            charset = ISO;
+        return charset;
     }
 
     static Observable.Transformer<String, String> emptyStringFilter() {
@@ -126,5 +148,11 @@ class RxSuggestionsInternal {
                 .filter(s -> s != null)
                 .map(String::trim)
                 .filter(s -> !s.isEmpty());
+    }
+
+    static <T> T requireNonNull(T obj, @NonNull String message) {
+        if (obj == null)
+            throw new NullPointerException(message);
+        return obj;
     }
 }
