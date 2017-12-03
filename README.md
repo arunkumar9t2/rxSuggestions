@@ -27,7 +27,7 @@ allprojects {
 
 ```groovy
 dependencies{
-    compile 'in.arunkumarsampath:suggestions:1.0.2'
+    compile 'in.arunkumarsampath:suggestions:1.0.3'
 }
 ```
 
