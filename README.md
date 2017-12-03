@@ -70,7 +70,6 @@ This library provides two different ways to fetch suggestions.
     RxTextView.afterTextChangeEvents(searchBox)
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
-                .onErrorReturn(throwable -> Collections.emptyList()) // Handle error
                 .doOnNext(this::setSuggestions) // Your suggestions
                 .doOnError(t -> Log.e(TAG, t.toString()))
                 .subscribe()

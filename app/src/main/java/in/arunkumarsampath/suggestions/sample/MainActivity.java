@@ -34,7 +34,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -76,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         subs.add(RxTextView.afterTextChangeEvents(searchBox)
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
-                .onErrorReturn(throwable -> Collections.emptyList())
                 .subscribe(this::setSuggestions, Throwable::printStackTrace));
     }
 
