@@ -19,6 +19,7 @@ package in.arunkumarsampath.suggestions;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +83,8 @@ public class RxSuggestions {
                 .compose(emptyStringFilter())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .observeOn(Schedulers.io())
-                .switchMap(searchTerm -> fetch(searchTerm, maxSuggestions))
+                .switchMap(searchTerm -> fetch(searchTerm, maxSuggestions)
+                        .onErrorReturn(throwable -> Collections.emptyList()))
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
