@@ -27,7 +27,7 @@ allprojects {
 
 ```groovy
 dependencies{
-    compile 'in.arunkumarsampath:suggestions:1.0.1'
+    compile 'in.arunkumarsampath:suggestions:1.0.2'
 }
 ```
 
@@ -39,7 +39,6 @@ If you are not using Android Studio 3.0+, [follow this guide.](https://developer
 
 ```groovy
 android {
-  ...
   // Configure only for each module that uses Java 8
   // language features (either in its source code or
   // through dependencies).
@@ -71,6 +70,7 @@ This library provides two different ways to fetch suggestions.
     RxTextView.afterTextChangeEvents(searchBox)
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
+                .onErrorReturn(throwable -> Collections.emptyList()) // Handle error
                 .doOnNext(this::setSuggestions) // Your suggestions
                 .doOnError(t -> Log.e(TAG, t.toString()))
                 .subscribe()
