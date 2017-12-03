@@ -25,7 +25,6 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +34,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxTextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -76,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
         subs.add(RxTextView.afterTextChangeEvents(searchBox)
                 .map(changeEvent -> changeEvent.editable().toString())
                 .compose(RxSuggestions.suggestionsTransformer())
-                .doOnNext(this::setSuggestions)
-                .doOnError(t -> Log.e(TAG, t.toString()))
-                .subscribe());
+                .onErrorReturn(throwable -> Collections.emptyList())
+                .subscribe(this::setSuggestions, Throwable::printStackTrace));
     }
 
     private void setSuggestions(@NonNull List<String> suggestions) {
