@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +41,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import in.arunkumarsampath.suggestions.RxSuggestions;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.fetchButton)
+    AppCompatButton fetchButton;
+
 
     private final CompositeSubscription subs = new CompositeSubscription();
 
@@ -86,6 +93,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         subs.clear();
+    }
+
+    @OnClick(R.id.fetchButton)
+    public void onFetchClick() {
+        subs.add(RxSuggestions.fetch("Batman")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<String>>() {
+                    @Override
+                    public void call(List<String> strings) {
+                        setSuggestions(strings);
+                    }
+                }));
     }
 
     @OnClick(R.id.fab)

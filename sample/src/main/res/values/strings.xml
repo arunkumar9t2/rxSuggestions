@@ -17,4 +17,6 @@
 <resources>
     <string name="app_name">RxSuggestions</string>
     <string name="enter_search_term">Enter search term</string>
+    <string name="transformer">Transformer</string>
+    <string name="batman">Batman (fetch)</string>
 </resources>

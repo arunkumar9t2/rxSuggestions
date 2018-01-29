@@ -25,6 +25,18 @@
     tools:context="in.arunkumarsampath.suggestions.sample.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/fetchButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/batman" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:text="@string/transformer" />
+
     <EditText
         android:id="@+id/search_box"
         android:layout_width="match_parent"
