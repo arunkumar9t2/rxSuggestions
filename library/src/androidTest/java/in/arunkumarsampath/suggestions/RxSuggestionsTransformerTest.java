@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Arunkumar
+ * Copyright 2018 Arunkumar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class RxSuggestionsTransformerTest {
     }
 
     @Test
-    public void fetchSuggestionsTransformerTest() throws Exception {
+    public void fetchSuggestionsTransformerTest() {
         final Observable<List<String>> listObservable = Observable
                 .just("1", "2", "3")
                 .concatMap(each -> Observable.just(each).delay(5, TimeUnit.SECONDS))
@@ -62,7 +62,7 @@ public class RxSuggestionsTransformerTest {
     }
 
     @Test
-    public void transformerEmptyFilterTest() throws Exception {
+    public void transformerEmptyFilterTest() {
         final Observable<List<String>> listObservable = Observable
                 .just("1", "        ")
                 .concatMap(each -> Observable.just(each).delay(5, TimeUnit.SECONDS))

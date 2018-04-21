@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Arunkumar
+ * Copyright 2018 Arunkumar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class RxSuggestionsTest {
     }
 
     @Test
-    public void fetchSuggestionsCountTest() throws Exception {
+    public void fetchSuggestionsCountTest() {
         final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
         int maxSuggestions = 1;
         RxSuggestions.fetch("a", maxSuggestions).subscribe(testSubscriber);
@@ -54,7 +54,7 @@ public class RxSuggestionsTest {
     }
 
     @Test
-    public void fetchSuggestionsNoErrorTest() throws Exception {
+    public void fetchSuggestionsNoErrorTest() {
         final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
         RxSuggestions.fetch("Something").subscribe(testSubscriber);
         if (Util.isOnline()) {
@@ -65,7 +65,7 @@ public class RxSuggestionsTest {
         }
     }
 
-    public void fetchSuggestionValueReceivedTest() throws Exception {
+    public void fetchSuggestionValueReceivedTest() {
         final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
         RxSuggestions.fetch("a").subscribe(testSubscriber);
 
@@ -82,7 +82,7 @@ public class RxSuggestionsTest {
     }
 
     @Test
-    public void fetchSuggestionsForEmptyString() throws Exception {
+    public void fetchSuggestionsForEmptyString() {
         String searchTerm = "    ";
         final TestSubscriber<List<String>> testSubscriber = TestSubscriber.create();
         RxSuggestions.fetch(searchTerm).subscribe(testSubscriber);
