@@ -82,6 +82,7 @@ public class RxSuggestions {
         return stringObservable -> stringObservable
                 .compose(emptyStringFilter())
                 .debounce(200, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
                 .observeOn(Schedulers.io())
                 .switchMap(searchTerm -> fetch(searchTerm, maxSuggestions)
                         .onErrorReturn(throwable -> Collections.emptyList()))
