@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-include ':sample', ':suggestions'
+include ':sample', ':suggestions-core'
