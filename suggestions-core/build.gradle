@@ -53,12 +53,15 @@ apply from: 'gradle-jcenter-push.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Basic support
+    implementation 'com.android.support:support-core-utils:27.1.1'
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:2.1.13"
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-
-    implementation 'com.android.support:support-core-utils:27.1.1'
-    implementation 'io.reactivex:rxjava:1.3.0'
-    implementation 'io.reactivex:rxandroid:1.2.1'
 }

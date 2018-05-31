@@ -14,4 +14,9 @@
  * limitations under the License.
  */
 
-include /*':sample', */':suggestions-core'
+package in.arunkumarsampath.suggestions2.item;
+
+public interface SuggestionItem<T> {
+
+    T value();
+}

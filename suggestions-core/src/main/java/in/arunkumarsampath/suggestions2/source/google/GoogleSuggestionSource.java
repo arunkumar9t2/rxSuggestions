@@ -14,4 +14,22 @@
  * limitations under the License.
  */
 
-include /*':sample', */':suggestions-core'
+package in.arunkumarsampath.suggestions2.source.google;
+
+import android.support.annotation.NonNull;
+
+import in.arunkumarsampath.suggestions2.item.SuggestionItem;
+import in.arunkumarsampath.suggestions2.source.SuggestionSource;
+import io.reactivex.Flowable;
+
+/**
+ * A suggestion source backed by Google suggest API. Hits the API, parses and
+ */
+public class GoogleSuggestionSource implements SuggestionSource {
+
+    @NonNull
+    @Override
+    public Flowable<SuggestionItem> getSuggestions(@NonNull String value) {
+        return Flowable.empty();
+    }
+}

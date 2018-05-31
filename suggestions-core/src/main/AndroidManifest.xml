@@ -15,7 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.arunkumarsampath.suggestions">
+    package="in.arunkumarsampath.suggestions2">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application />

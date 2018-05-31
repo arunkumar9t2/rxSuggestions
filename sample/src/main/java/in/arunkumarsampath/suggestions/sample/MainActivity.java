@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package in.arunkumarsampath.suggestions.sample;
+package in.arunkumarsampath.suggestions2.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,7 +40,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import in.arunkumarsampath.suggestions.RxSuggestions;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;

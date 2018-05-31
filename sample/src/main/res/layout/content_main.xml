@@ -22,7 +22,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.arunkumarsampath.suggestions.sample.MainActivity"
+    tools:context="in.arunkumarsampath.suggestions2.sample.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.AppCompatButton
