@@ -31,3 +31,7 @@ values.properties
 
 # Sandbox stuff
 _sandbox
+
+.project
+.classpath
+.settings/
