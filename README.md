@@ -1,4 +1,8 @@
 [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg)](https://android-arsenal.com/api?level=16)[ ![Download](https://api.bintray.com/packages/arunkumar9t2/maven/suggestions/images/download.svg) ](https://bintray.com/arunkumar9t2/maven/suggestions/_latestVersion)
+# Notice
+
+Version 2 supporting RxJava 2 is in development in `master` branch. For version 1 with RxJava 1 support, visit [v 1.0 branch](https://github.com/arunkumar9t2/rxSuggestions/tree/v1.0)
+
 # RxSuggestions
 
 A RxJava library to fetch search suggestions backed by `Google Suggest`.
