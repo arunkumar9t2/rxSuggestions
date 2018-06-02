@@ -27,7 +27,7 @@ import io.reactivex.Flowable;
  * To enable functionality override {@link #getSuggestions(String)}, add your suggestion logic
  * and return a {@link Flowable<SuggestionItem>}
  * <p>
- * {@link #getSuggestions(String)} can be called repeatedly and in any order. If stateful code is added,
+ * {@link #getSuggestions(String)} can be called repeatedly in any order. If stateful code is added,
  * be sure to handle it correctly for each invocation.
  */
 public interface SuggestionSource {
