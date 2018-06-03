@@ -32,6 +32,7 @@ import in.arunkumarsampath.suggestions2.source.SuggestionSource;
 import in.arunkumarsampath.suggestions2.util.Util;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
 
 import static org.xmlpull.v1.XmlPullParser.END_DOCUMENT;
 import static org.xmlpull.v1.XmlPullParser.START_TAG;
@@ -47,42 +48,48 @@ public class GoogleSuggestionSource implements SuggestionSource {
     @NonNull
     @Override
     public Flowable<SuggestionItem> getSuggestions(@NonNull String value) {
-        return Flowable.just(value)
-                .map(Util::prepareSearchTerm)
-                .flatMap(searchTerm -> Flowable.create(emitter -> {
-                    HttpURLConnection httpURLConnection = null;
+        return Flowable.fromCallable(() -> {
+            HttpURLConnection httpURLConnection;
+            final String suggestUrl = String.format(SUGGEST_URL_FORMAT, Util.prepareSearchTerm(value));
+            final URL url = new URL(suggestUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+            return httpURLConnection;
+        }).flatMap(httpURLConnection -> Flowable.create(emitter -> {
+            try (final InputStream inputStream = httpURLConnection.getInputStream()) {
+                final XmlPullParser xmlParser = XmlPullParserFactory.newInstance().newPullParser();
+                xmlParser.setInput(inputStream, Util.extractEncoding(httpURLConnection.getContentType()));
 
-                    final String suggestUrl = String.format(SUGGEST_URL_FORMAT, searchTerm);
-                    try {
-                        final URL url = new URL(suggestUrl);
-                        httpURLConnection = (HttpURLConnection) url.openConnection();
-                        httpURLConnection.connect();
+                int eventType = xmlParser.getEventType();
 
-                        try (final InputStream inputStream = httpURLConnection.getInputStream()) {
-                            final XmlPullParser xmlParser = XmlPullParserFactory.newInstance().newPullParser();
-                            xmlParser.setInput(inputStream, "");
-
-                            int eventType = xmlParser.getEventType();
-
-                            // Perform back pressure aware iteration.
-                            while (eventType != END_DOCUMENT && !emitter.isCancelled() && emitter.requested() >= 0) {
-                                boolean validEvent = eventType == START_TAG && xmlParser.getName().equalsIgnoreCase(SUGGESTION);
-                                if (validEvent) {
-                                    final String suggestion = xmlParser.getAttributeValue(0);
-                                    emitter.onNext(new StringSuggestionItem(suggestion));
-                                }
-                                eventType = xmlParser.next();
-                            }
-                            emitter.onComplete();
-                        }
-                    } finally {
-                        cancel(httpURLConnection);
+                while (isFlowableEmissionValid(emitter, eventType)) { // Perform back pressure aware iteration.
+                    boolean validEvent = eventType == START_TAG && xmlParser.getName().equalsIgnoreCase(SUGGESTION);
+                    if (validEvent) {
+                        final String suggestion = xmlParser.getAttributeValue(0);
+                        emitter.onNext(new StringSuggestionItem(suggestion));
                     }
+                    eventType = xmlParser.next();
+                }
+                emitter.onComplete();
+            } finally {
+                cancel(httpURLConnection);
+            }
+            emitter.setCancellable(() -> cancel(httpURLConnection));
+        }, BackpressureStrategy.LATEST));
+    }
 
-                    // Cleanup resources on finish
-                    HttpURLConnection httpUrlConnCopy = httpURLConnection;
-                    emitter.setCancellable(() -> cancel(httpUrlConnCopy));
-                }, BackpressureStrategy.LATEST));
+    /**
+     * Method to check if XML iteration can be still performed.
+     * <p>
+     * Checks if {@link Flowable} is still valid, if downstream is actively requesting further elements,
+     * and we have not reached XML document end.
+     *
+     * @param emitter   The emitter to currently handling events.
+     * @param eventType XML document event type.
+     * @return {@code true} if Flowable emission is valid.
+     */
+    private boolean isFlowableEmissionValid(FlowableEmitter<SuggestionItem> emitter, int eventType) {
+        return eventType != END_DOCUMENT && !emitter.isCancelled() && emitter.requested() > 0;
     }
 
     private void cancel(@Nullable HttpURLConnection httpURLConnection) {
