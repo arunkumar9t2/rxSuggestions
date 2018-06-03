@@ -16,11 +16,20 @@
 
 package in.arunkumarsampath.suggestions2.source.google;
 
+import android.text.TextUtils;
+
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.util.List;
+
+import in.arunkumarsampath.suggestions2.Util;
+import in.arunkumarsampath.suggestions2.item.SimpleSuggestionItem;
+import io.reactivex.Flowable;
+import io.reactivex.subscribers.TestSubscriber;
 
 public class GoogleSuggestionSourceTest {
 
@@ -40,27 +49,62 @@ public class GoogleSuggestionSourceTest {
 
     @Test
     public void getSuggestions() {
-        suggestionSource.getSuggestions("Hello")
-                .test(1)
-                .assertSubscribed()
-                .assertComplete()
-                .assertNoErrors();
+        Flowable<SimpleSuggestionItem> suggestions = suggestionSource.getSuggestions("Hello");
+        if (Util.isOnline()) {
+            suggestions.test(1)
+                    .assertSubscribed()
+                    .assertComplete()
+                    .assertNoErrors();
+
+            suggestions.test(3)
+                    .assertValueCount(3)
+                    .assertComplete()
+                    .assertNoErrors();
+        } else {
+            testFailureNoEvents(suggestions);
+        }
     }
 
     @Test
     public void getSuggestionsFailure() {
-        suggestionSource.getSuggestions("")
-                .test()
-                .assertError(FileNotFoundException.class)
-                .assertNotComplete()
-                .assertNoValues();
+        Flowable<SimpleSuggestionItem> suggestions = suggestionSource.getSuggestions("");
+        if (Util.isOnline()) {
+            suggestions
+                    .test()
+                    .assertError(FileNotFoundException.class)
+                    .assertNotComplete()
+                    .assertNoValues();
+        } else {
+            testFailureNoEvents(suggestions);
+        }
     }
 
 
     @Test
     public void getSuggestions_ValuesNotEmpty() {
-        suggestionSource.getSuggestions("Hello")
-                .test()
-                .assertComplete();
+        Flowable<SimpleSuggestionItem> suggestions = suggestionSource.getSuggestions("Hello");
+
+        if (Util.isOnline()) {
+            final TestSubscriber<SimpleSuggestionItem> suggestionItemTestSubscriber = suggestions.test();
+            suggestionItemTestSubscriber
+                    .assertNoErrors()
+                    .assertComplete();
+
+            final List<List<Object>> events = suggestionItemTestSubscriber.getEvents();
+            final List<Object> onNextEvents = events.get(0);
+            for (Object suggestionItem : onNextEvents) {
+                Assert.assertTrue(suggestionItem instanceof SimpleSuggestionItem);
+                Assert.assertNotNull(((SimpleSuggestionItem) suggestionItem).value());
+                Assert.assertTrue(!TextUtils.isEmpty(((SimpleSuggestionItem) suggestionItem).value()));
+            }
+        } else {
+            testFailureNoEvents(suggestions);
+        }
+    }
+
+    private void testFailureNoEvents(Flowable<SimpleSuggestionItem> suggestions) {
+        suggestions.test()
+                .assertNoValues()
+                .assertNotComplete();
     }
 }

@@ -26,8 +26,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import in.arunkumarsampath.suggestions2.item.StringSuggestionItem;
-import in.arunkumarsampath.suggestions2.item.SuggestionItem;
+import in.arunkumarsampath.suggestions2.item.SimpleSuggestionItem;
 import in.arunkumarsampath.suggestions2.source.SuggestionSource;
 import in.arunkumarsampath.suggestions2.util.Util;
 import io.reactivex.BackpressureStrategy;
@@ -40,19 +39,18 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
 /**
  * A suggestion source backed by Google suggest API.
  */
-public class GoogleSuggestionSource implements SuggestionSource {
+public final class GoogleSuggestionSource implements SuggestionSource<SimpleSuggestionItem> {
 
     private static final String SUGGEST_URL_FORMAT = "http://suggestqueries.google.com/complete/search?client=toolbar&q=%s";
     private static final String SUGGESTION = "suggestion";
 
     @NonNull
     @Override
-    public Flowable<SuggestionItem> getSuggestions(@NonNull String value) {
+    public Flowable<SimpleSuggestionItem> getSuggestions(@NonNull String value) {
         return Flowable.fromCallable(() -> {
-            HttpURLConnection httpURLConnection;
             final String suggestUrl = String.format(SUGGEST_URL_FORMAT, Util.prepareSearchTerm(value));
             final URL url = new URL(suggestUrl);
-            httpURLConnection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.connect();
             return httpURLConnection;
         }).flatMap(httpURLConnection -> Flowable.create(emitter -> {
@@ -66,7 +64,7 @@ public class GoogleSuggestionSource implements SuggestionSource {
                     boolean validEvent = eventType == START_TAG && xmlParser.getName().equalsIgnoreCase(SUGGESTION);
                     if (validEvent) {
                         final String suggestion = xmlParser.getAttributeValue(0);
-                        emitter.onNext(new StringSuggestionItem(suggestion));
+                        emitter.onNext(new SimpleSuggestionItem(suggestion));
                     }
                     eventType = xmlParser.next();
                 }
@@ -81,14 +79,17 @@ public class GoogleSuggestionSource implements SuggestionSource {
     /**
      * Method to check if XML iteration can be still performed.
      * <p>
-     * Checks if {@link Flowable} is still valid, if downstream is actively requesting further elements,
-     * and we have not reached XML document end.
+     * Checks if {@link Flowable} is still valid based on:
+     * <ul>
+     * <li>Downstream is actively requesting further elements.</li>
+     * <li>XML document end has not reached.</li>
+     * </ul>
      *
      * @param emitter   The emitter to currently handling events.
      * @param eventType XML document event type.
      * @return {@code true} if Flowable emission is valid.
      */
-    private boolean isFlowableEmissionValid(FlowableEmitter<SuggestionItem> emitter, int eventType) {
+    private boolean isFlowableEmissionValid(FlowableEmitter<SimpleSuggestionItem> emitter, int eventType) {
         return eventType != END_DOCUMENT && !emitter.isCancelled() && emitter.requested() > 0;
     }
 

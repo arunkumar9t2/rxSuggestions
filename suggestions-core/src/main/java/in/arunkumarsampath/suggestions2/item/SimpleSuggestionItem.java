@@ -21,12 +21,12 @@ import android.support.annotation.NonNull;
 /**
  * Simple {@link SuggestionItem} that holds a {@link String}
  */
-public class StringSuggestionItem implements SuggestionItem<String> {
+public class SimpleSuggestionItem implements SuggestionItem<String> {
 
     @NonNull
     private final String value;
 
-    public StringSuggestionItem(@NonNull String value) {
+    public SimpleSuggestionItem(@NonNull String value) {
         this.value = value;
     }
 

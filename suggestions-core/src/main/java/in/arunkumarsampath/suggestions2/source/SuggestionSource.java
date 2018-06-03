@@ -25,13 +25,13 @@ import io.reactivex.Flowable;
  * Suggestions source is the definition for a class that provides suggestions for a given string.
  * <p>
  * To enable functionality override {@link #getSuggestions(String)}, add your suggestion logic
- * and return a {@link Flowable<SuggestionItem>}
+ * and return a {@link Flowable}
  * <p>
  * {@link #getSuggestions(String)} can be called repeatedly in any order. If stateful code is added,
  * be sure to handle it correctly for each invocation.
  */
-public interface SuggestionSource {
+public interface SuggestionSource<T extends SuggestionItem> {
 
     @NonNull
-    Flowable<SuggestionItem> getSuggestions(@NonNull final String value);
+    Flowable<T> getSuggestions(@NonNull final String value);
 }
